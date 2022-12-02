@@ -15,7 +15,7 @@ except:
 
 def build_table():
     db_name = input("Enter the name of your database: ")
-    Mysql.execute(f'CREATE DATABASE IF NOT EXISTS {db_name};')
+    Mysql.execute(f'CREATE DATABASE {db_name};')
     con = sql.connect(user = 'root', password= user_pwd, database= f'{db_name}')
     cur = con.cursor()
 
