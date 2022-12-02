@@ -1,13 +1,13 @@
 import mysql.connector as sql
 from tabulate import tabulate
 
-sqlcon = sql.connect(user = 'root', password='pwd')
-Mysql = sqlcon.cursor()
-
-if sqlcon.is_connected():
-    print('Successfully connected to MySQL')
-else:
-    print('Connection Error')
+try:
+    sqlcon = sql.connect(user = 'root', password='')
+    Mysql = sqlcon.cursor()
+    print('\nSuccessfully connected to MySQL')
+except:
+    print('\nConnection Error!!!')
+    print('Check if you have given the correct SQL-root password.')
     exit()
 
 
@@ -16,6 +16,7 @@ def build_table():
     Mysql.execute(f'CREATE DATABASE IF NOT EXISTS {db_name};')
     con = sql.connect(user = 'root', password='SQL#785%', database= f'{db_name}')
     cur = con.cursor()
+
     print(f"Using {db_name}")
 
     tb_name = input("Enter the name of your table: ")
@@ -34,12 +35,11 @@ def build_table():
             print('\n Coloumn added Successfully \n')
             cur.execute(f'DESC {tb_name}')
             lst = cur.fetchall()
-            print(lst)
-            print(tabulate(lst,headers=['Field','Type','Null','Key','Default','Extra'],tablefmt='pretty'))
+            print(tabulate(lst,headers=['Field','Type','Null','Key','Default','Extra'],tablefmt='pretty'))   
+    else:
         cur.execute(f'DESC {tb_name}')
         lst = cur.fetchall()
-        print(lst)
-        print(tabulate(lst,headers=['Field','Type','Null','Key','Default','Extra'],tablefmt='pretty'))
+        print(tabulate(lst,headers=['Field','Type','Null','Key','Default','Extra'],tablefmt='pretty')) 
 
 
 def add_values():
@@ -62,7 +62,7 @@ def add_values():
         cmd = []
         view = []
         f_view = []
-        for i in range(len(lst)):       #type: ignore
+        for i in range(len(lst)):
             print(f'{len(lst)-i} coloumn(s) left to enter\n')
             val = input("Enter your Values: ")
             if val == '':
@@ -87,9 +87,6 @@ def add_values():
         print("\n Enter next set of values \n")
     con.commit()
 
-def display():
-    pass
-
 def manual():
     cmd = input('Enter your query: ')
     if cmd != '':
@@ -97,28 +94,27 @@ def manual():
             cmd += ';'
         Mysql.execute(cmd)
         print(f'\n "{cmd}" Successfully Executed \n')
-        for i in Mysql:     #type: ignore
+        for i in Mysql:
             print(i)
         sqlcon.commit()
         manual()
+    else:
+        pass
 
 while True:
-    ch = int(input("""
+    ch = input("""
 1.build table
 2.add values
-3.display table
-4.manually enter commands
-5.exit
-Enter Choice: """))
-    if ch == 1:
+3.manually enter commands
+4.exit
+Enter Choice: """)
+    if ch == '1':
         build_table()
-    if ch == 2:
+    elif ch == '2':
         add_values()
-    if ch == 3:
-        display()
-    if ch == 4:
+    elif ch == '3':
         manual()
-    if ch == 5:
+    elif ch == '4':
         exit()
     else:
-        print('\n Invalid Input!!! \n')
+        print('\n\t Invalid Input!!! \n')
