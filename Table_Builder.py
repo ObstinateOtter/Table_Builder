@@ -20,26 +20,20 @@ def build_table():
     print(f"Using {db_name}")
 
     tb_name = input("Enter the name of your table: ")
-    comp_col = input('Enter the name of the coloumn[leave blank to view table description]: ')
-    if comp_col != '':
-        comp_dt= input('Enter the datatype: ')
-        cur.execute(f'CREATE TABLE {tb_name}({comp_col} {comp_dt});')
-        print(f"Created table {tb_name}")
-
-        while True:
-            col = input('Enter the name of the coloumn[leave blank to exit]: ')
-            if col == '':
-                break
-            datatype = input('Enter the datatype: ')
-            cur.execute(f'ALTER TABLE {tb_name} ADD {col} {datatype};')
-            print('\n Coloumn added Successfully \n')
-            cur.execute(f'DESC {tb_name}')
-            lst = cur.fetchall()
-            print(tabulate(lst,headers=['Field','Type','Null','Key','Default','Extra'],tablefmt='pretty'))   
-    else:
+    comp_col = input('Enter the name of the coloumn: ')
+    comp_dt= input('Enter the datatype: ')
+    cur.execute(f'CREATE TABLE {tb_name}({comp_col} {comp_dt});')
+    print(f"Created table {tb_name}")
+    while True:
+        col = input('Enter the name of the coloumn[leave blank to exit]: ')
+        if col == '':
+            break
+        datatype = input('Enter the datatype: ')
+        cur.execute(f'ALTER TABLE {tb_name} ADD {col} {datatype};')
+        print('\n Coloumn added Successfully \n')
         cur.execute(f'DESC {tb_name}')
         lst = cur.fetchall()
-        print(tabulate(lst,headers=['Field','Type','Null','Key','Default','Extra'],tablefmt='pretty')) 
+        print(tabulate(lst,headers=['Field','Type','Null','Key','Default','Extra'],tablefmt='pretty'))
 
 
 def add_values():
@@ -79,30 +73,37 @@ def add_values():
         if a == 0:
             break
 
-        cur.execute(f'INSERT INTO {table} VALUES{tuple(cmd)};')
-
+        if len(cmd) == 1:
+            f_cmd = str(tuple(cmd)).replace(",)",')')
+        else:
+            f_cmd = str(tuple(cmd))
+        
+        cur.execute(f'INSERT INTO {table} VALUES{f_cmd};')
         f_view.append(view)
         print(tabulate(f_view,headers=tst,tablefmt='pretty'))
 
         print("\n Enter next set of values \n")
     con.commit()
 
+
 def manual():
     cmd = input('Enter your query: ')
     if cmd != '':
         if cmd[-1] != ';':
             cmd += ';'
-        Mysql.execute(cmd)
-        print(f'\n "{cmd}" Successfully Executed \n')
-        for i in Mysql:
-            print(i)
-        sqlcon.commit()
+        try:
+            Mysql.execute(cmd)
+            print(f'\n "{cmd}" Successfully Executed \n')
+            for i in Mysql:
+                print(i)
+            sqlcon.commit()
+        except:
+            print('Command Syntax Error!!!')
         manual()
-    else:
-        pass
+
 
 while True:
-    ch = input("""
+    ch = input("""\n
 1.build table
 2.add values
 3.manually enter commands
