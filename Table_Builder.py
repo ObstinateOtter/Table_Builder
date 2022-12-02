@@ -4,7 +4,7 @@ from tabulate import tabulate
 pwd = '' #Enter your SQL-root password
 
 try:
-    sqlcon = sql.connect(user = 'root', password='pwd')
+    sqlcon = sql.connect(user = 'root', password= pwd)
     Mysql = sqlcon.cursor()
     print('\nSuccessfully connected to MySQL')
 except:
@@ -16,7 +16,7 @@ except:
 def build_table():
     db_name = input("Enter the name of your database: ")
     Mysql.execute(f'CREATE DATABASE IF NOT EXISTS {db_name};')
-    con = sql.connect(user = 'root', password='pwd', database= f'{db_name}')
+    con = sql.connect(user = 'root', password= pwd, database= f'{db_name}')
     cur = con.cursor()
 
     print(f"Using {db_name}")
@@ -40,7 +40,7 @@ def build_table():
 
 def add_values():
     db_name = input("Enter the name of your database: ")
-    con = sql.connect(user = 'root', password='pwd', database= f'{db_name}')
+    con = sql.connect(user = 'root', password=pwd, database= f'{db_name}')
     cur = con.cursor()
     print(f"Using {db_name}")
 
